@@ -339,7 +339,9 @@ def run_experiments():
         four_sided_max = max_scoring_num_rolls(four_sided)
         print('Max scoring num rolls for four-sided dice:', four_sided_max)
         rerolled_max = max_scoring_num_rolls(reroll(six_sided))
-        print('Max scoring num rolls for re-rolled dice:', rerolled_max)
+        print('Max scoring num rolls for re-rolled six dice:', rerolled_max)
+        rerolled_max = max_scoring_num_rolls(reroll(four_sided))
+        print('Max scoring num rolls for re-rolled four dice:', rerolled_max)
 
     if False:  # Change to True to test always_roll(8)
         for i in range(1, 11):
@@ -394,21 +396,32 @@ def final_strategy(score, opponent_score):
     *** YOUR DESCRIPTION HERE ***
     """
     # BEGIN PROBLEM 11
-    gain = prime_promotion(free_bacon(opponent_score))
-    if (score + gain) * 2 == opponent_score:
+    if opponent_score == score == 0:
+        return -1
+    gain_becon = prime_promotion(free_bacon(opponent_score))
+    if score + gain_becon > 100 and score + gain_becon != opponent_score * 2:
         return 0
+
     if if_hog_wild(score, opponent_score):
-        num_rolls = swap_strategy(score, opponent_score, margin=12, num_rolls=5)
-        if num_rolls == 0 and if_hog_wild(score + gain, opponent_score):
-            num_rolls = 5
+        margin = 10
+        num = 8
+        num_rolls = swap_strategy(score, opponent_score, margin = margin, num_rolls = num)
+        num_rolls = if_reset(num_rolls, num, score + gain_becon, opponent_score)
     else:
-        num_rolls = swap_strategy(score, opponent_score, margin=7, num_rolls=6)
-        if num_rolls == 0 and if_hog_wild(score + gain, opponent_score):
-            num_rolls = 6
+        margin = 5
+        num = 5
+        num_rolls = swap_strategy(score, opponent_score, margin = margin, num_rolls = num)
+        num_rolls = if_reset(num_rolls, num, score + gain_becon, opponent_score)
     return num_rolls
 
 def if_hog_wild(score, opponent_score):
     return (score + opponent_score) % 7 == 0
+
+def if_reset(num_rolls, num, new_score, opponent_score):
+    if num_rolls == 0 and if_hog_wild(new_score, opponent_score):
+        return num
+    else:
+        return num_rolls
 
 
     # END PROBLEM 11
