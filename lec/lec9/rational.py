@@ -16,7 +16,10 @@ def add_rational(r1, r2):
                     denom(r1) * denom(r2))
 
 def print_rational(r):
-    print(numer(r), '/', denom(r)) 
+    print(numer(r), '/', denom(r))
+
+def equal_rational(r1, r2):
+    return numer(r1) * denom(r2) == numer(r2) * denom(r1)
 
 def gcd(a, b):
     """
