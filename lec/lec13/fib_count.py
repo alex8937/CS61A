@@ -13,14 +13,15 @@ def memo(f):
         return cache[n]
     return memoized
 
+
 def fib(n):
     if n == 1 or n == 0:
         return n
     else:
         return fib(n - 1) + fib(n - 2)
 
-#fib = count(fib)
-#fib_counted = fib
+fib = count(fib)
+fib_counted = fib
 fib = count(memo(fib))
 fib_counted = count(fib)
 
