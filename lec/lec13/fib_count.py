@@ -21,10 +21,10 @@ def fib(n):
         return fib(n - 1) + fib(n - 2)
 
 fib = count(fib)
-fib_counted = fib
-fib = count(memo(fib))
-fib_counted = count(fib)
+counted_fib = fib
+fib = memo(fib)
+fib = count(fib)
 
 print(fib(30))
 print(fib.call_count)
-print(fib_counted.call_count)
+print(counted_fib.call_count)
