@@ -7,7 +7,7 @@ def map(fn, seq):
     >>> map(lambda x: x*x, [1, 2, 3])
     [1, 4, 9]
     """
-    "*** YOUR CODE HERE ***"
+    return [fn(x) for x in seq]
 
 def filter(pred, seq):
     """Keeps elements in seq only if they satisfy pred.
@@ -16,6 +16,7 @@ def filter(pred, seq):
     [2, 4]
     """
     "*** YOUR CODE HERE ***"
+    return [x for x in seq if pred(x)]
 
 def reduce(combiner, seq):
     """Combines elements in seq using combiner.
@@ -27,7 +28,13 @@ def reduce(combiner, seq):
     >>> reduce(lambda x, y: x * y, [4])
     4
     """
-    "*** YOUR CODE HERE ***"
+    if len(seq) == 0:
+        return 0
+    ans,i = seq[0], 1
+    while i < len(seq):
+        ans, i = combiner(ans, seq[i]), i + 1
+    return ans
+
 
 # pyTunes
 def make_pytunes(username):
@@ -46,7 +53,15 @@ def make_pytunes(username):
         darude
           sandstorm
     """
-    "*** YOUR CODE HERE ***"
+    return tree(username,
+             [tree('pop',
+               [tree('justin bieber',
+                 [tree('single',
+                   [tree('what do you mean?')])]),
+                tree('2015 pop mashup')]),
+              tree('trance',
+                [tree('darude',
+                  [tree('sandstorm')])])])
 
 def num_songs(t):
     """Return the number of songs in the pyTunes tree, t.
@@ -55,7 +70,13 @@ def num_songs(t):
     >>> num_songs(pytunes)
     3
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return 1
+    else:
+        num = 0
+        for b in branches(t):
+            num += num_songs(b)
+        return num
 
 def add_song(t, song, category):
     """Returns a new tree with SONG added to CATEGORY. Assume the CATEGORY
@@ -74,7 +95,13 @@ def add_song(t, song, category):
           georgia
 
     """
-    "*** YOUR CODE HERE ***"
+
+
+    if root(t) == category:
+        return tree(root(t), branches(t) + [tree(song)])
+    else:
+        return tree(root(t), [add_song(b, song, category) for b in branches(t)])
+
 
 # Tree ADT
 def tree(root, branches=[]):
