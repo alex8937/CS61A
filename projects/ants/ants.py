@@ -87,6 +87,7 @@ class Insect(object):
 
     is_ant = False
     damage = 0
+    watersafe = False
 
     def __init__(self, armor, place=None):
         """Create an Insect with an ARMOR amount and a starting PLACE."""
@@ -122,6 +123,7 @@ class Bee(Insect):
 
     name = 'Bee'
     damage = 1
+    watersafe = True
 
     def sting(self, ant):
         """Attack an ANT, reducing its armor by 1."""
@@ -196,8 +198,10 @@ class ThrowerAnt(Ant):
         This method returns None if there is no such Bee (or none in range).
         """
         # BEGIN Problem 3B
-        "*** REPLACE THIS LINE ***"
-        return random_or_none(self.place.bees)
+        nearest_place = self.place
+        while not nearest_place.bees and nearest_place.entrance is not hive:
+            nearest_place = nearest_place.entrance
+        return random_or_none(nearest_place.bees)
         # END Problem 3B
 
     def throw_at(self, target):
@@ -225,7 +229,9 @@ class Water(Place):
     def add_insect(self, insect):
         """Add INSECT if it is watersafe, otherwise reduce its armor to 0."""
         # BEGIN Problem 3A
-        "*** REPLACE THIS LINE ***"
+        Place.add_insect(self, insect)
+        if not insect.watersafe:
+            insect.reduce_armor(insect.armor)
         # END Problem 3A
 
 
@@ -236,7 +242,8 @@ class FireAnt(Ant):
     damage = 3
     # BEGIN Problem 4A
     "*** REPLACE THIS LINE ***"
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    food_cost = 5
     # END Problem 4A
 
     def reduce_armor(self, amount):
@@ -245,7 +252,12 @@ class FireAnt(Ant):
         the current place.
         """
         # BEGIN Problem 4A
-        "*** REPLACE THIS LINE ***"
+        self.armor -= amount
+        if self.armor <= 0:
+            for bee in self.place.bees[:]:
+                bee.reduce_armor(self.damage)
+            self.place.remove_insect(self)
+
         # END Problem 4A
 
 
