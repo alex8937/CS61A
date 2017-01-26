@@ -422,13 +422,20 @@ class TankAnt(BodyguardAnt):
     name = 'Tank'
     damage = 1
     # BEGIN Problem 8
-    "*** REPLACE THIS LINE ***"
-    implemented = False   # Change to True to view in the GUI
+    food_cost = 6
+    implemented = True   # Change to True to view in the GUI
     # END Problem 8
 
     def action(self, colony):
         # BEGIN Problem 8
-        "*** REPLACE THIS LINE ***"
+        if self.ant:
+            self.ant.action(colony)
+        for bee in self.place.bees[:]:
+            bee.reduce_armor(self.damage)
+        if self.armor == 0:
+            self.place.remove_insect(self)        
+
+
         # END Problem 8
 
 class QueenAnt(Ant):  # You should change this line
