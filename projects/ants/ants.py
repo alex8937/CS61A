@@ -65,6 +65,8 @@ class Place(object):
 
         A Bee is just removed from the list of Bees.
         """
+        if isinstance(insect, QueenAnt) and not insect.impostor:
+            return
         if insect.is_ant:
             # Phase 4: Special Handling for BodyguardAnt and QueenAnt
             if self.ant is insect:
@@ -433,23 +435,30 @@ class TankAnt(BodyguardAnt):
         for bee in self.place.bees[:]:
             bee.reduce_armor(self.damage)
         if self.armor == 0:
-            self.place.remove_insect(self)        
+            self.place.remove_insect(self)
 
 
         # END Problem 8
 
-class QueenAnt(Ant):  # You should change this line
+class QueenAnt(ScubaThrower):  # You should change this line
     """The Queen of the colony.  The game is over if a bee enters her place."""
 
     name = 'Queen'
     # BEGIN Problem 9
-    "*** REPLACE THIS LINE ***"
-    implemented = False   # Change to True to view in the GUI
+    food_cost = 7
+    queen_armor = 1
+    implemented = True   # Change to True to view in the GUI
+    queen_exist = False
+    impostor = False
+    doubled = set()
     # END Problem 9
 
-    def __init__(self):
+    def __init__(self, armor=queen_armor):
         # BEGIN Problem 9
-        "*** REPLACE THIS LINE ***"
+        if QueenAnt.queen_exist:
+            self.impostor = True
+        QueenAnt.queen_exist = True
+        Insect.__init__(self, armor)
         # END Problem 9
 
     def action(self, colony):
@@ -459,7 +468,22 @@ class QueenAnt(Ant):  # You should change this line
         Impostor queens do only one thing: reduce their own armor to 0.
         """
         # BEGIN Problem 9
-        "*** REPLACE THIS LINE ***"
+        if self.impostor:
+            self.reduce_armor(self.armor)
+            return
+        ScubaThrower.action(self, colony)
+        rolling_place = self.place
+        while rolling_place.exit:
+            rolling_place = rolling_place.exit
+            local_ant = rolling_place.ant
+            if local_ant:
+                if local_ant not in QueenAnt.doubled:
+                    local_ant.damage *= 2
+                    QueenAnt.doubled.add(local_ant)
+                if local_ant.container and local_ant.ant and local_ant.ant not in QueenAnt.doubled:
+                    local_ant.ant.damage *= 2
+                    QueenAnt.doubled.add(local_ant.ant)                  
+
         # END Problem 9
 
     def reduce_armor(self, amount):
@@ -467,7 +491,11 @@ class QueenAnt(Ant):  # You should change this line
         remaining, signal the end of the game.
         """
         # BEGIN Problem 9
-        "*** REPLACE THIS LINE ***"
+        self.armor -= amount
+        if self.armor <= 0:
+            if not self.impostor:
+                bees_win()
+            self.place.remove_insect(self)
         # END Problem 9
 
 class AntRemover(Ant):
