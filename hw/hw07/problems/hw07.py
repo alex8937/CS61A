@@ -18,11 +18,16 @@ class Fib():
     8
     """
 
-    def __init__(self):
-        self.value = 0
+    def __init__(self, val = 0, pre = 0):
+        self.value = val
+        self.pre = pre
 
     def next(self):
-        "*** YOUR CODE HERE ***"
+        if self.value == 0:
+            return Fib(1, self.value)
+        else:
+            return Fib(self.value + self.pre, self.value)
+
 
     def __repr__(self):
         return str(self.value)
