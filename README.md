@@ -1,4 +1,11 @@
 # CS61A
 Berkley CS61A
 
-Finished Lec17
+Finished up to:
+ 
+Lec19
+Dis05
+hw07
+lab06
+project ants
+

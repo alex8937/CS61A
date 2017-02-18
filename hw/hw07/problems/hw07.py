@@ -142,4 +142,9 @@ class MissManners:
         magic_word = 'please '
         if not message.startswith(magic_word):
             return 'You must learn to say please first.'
-        "*** YOUR CODE HERE ***"
+        else:
+            function = message[7:]
+            if hasattr(self.obj, function):
+                return getattr(self.obj, function)(*args)
+            else:
+                return 'Thanks for asking, but I know not how to {0}.'.format(function)
