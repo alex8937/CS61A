@@ -47,7 +47,12 @@ create table sentences as
 
 -- Ways to stack 4 dogs to a height of at least 170, ordered by total height
 create table stacks as
-  select "REPLACE THIS LINE WITH YOUR SOLUTION";
+  with stacks_temp(dogs, last_height, total_height, num) as (
+  select name, height, height, 1 from dogs union
+  select dogs || ', ' || name, height, total_height + height, num + 1
+  from stacks_temp, dogs where num <= 3 and last_height < height
+  )
+  select dogs, total_height from stacks_temp where total_height >= 170 order by total_height;
 
 -- non_parents is an optional, but recommended question
 -- All non-parent relations ordered by height difference
@@ -62,7 +67,7 @@ create table ints as
     select n from i;
 
 create table divisors as
-    select "REPLACE THIS LINE WITH YOUR SOLUTION";
+    select i1.n as n, count(*) as num_divisors from ints i1, ints i2 where i1.n >= i2.n and i1.n % i2.n = 0 group by i1.n ;
 
 create table primes as
-    select "REPLACE THIS LINE WITH YOUR SOLUTION";
+    select n from divisors where num_divisors = 2;
